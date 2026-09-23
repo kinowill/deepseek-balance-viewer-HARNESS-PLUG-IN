@@ -14,7 +14,8 @@
 - **Dernière validation réelle** : 2026-09-23 — migration d'installation
   testée sur fixture, test de rendu du bouton et du panneau réussi, fichiers
   déployés identiques au repo, nouveau boot sans rapport `web-boot`, badge et
-  panneau confirmés visuellement dans l'application.
+  panneau confirmés visuellement dans l'application ; correctif poussé sur
+  `main` (`7f4a97d`).
 - **Prochaine action** : saisir une vraie clé API et confirmer le solde ;
   publier sur npm après authentification locale.
 - **Points durs / blocages** : le profil `desktop` (Electron) refuse la CLI

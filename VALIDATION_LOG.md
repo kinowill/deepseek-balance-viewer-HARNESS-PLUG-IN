@@ -173,4 +173,6 @@
   ouvert avec état, rafraîchissement, champ de clé masqué et action Save.
 - **Statut** : réussi pour le rendu sans clé. Le solde réel reste à tester
   avec une clé API fournie par l'utilisateur.
+- **Git** : correctif d'installation et de rendu poussé sur `origin/main`
+  (`7f4a97d`).
 
