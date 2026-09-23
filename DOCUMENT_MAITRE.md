@@ -1,27 +1,28 @@
-# Document maître — dsh-deepseek-balance (plugin DeepSeek Harness)
+# Document maître — dsh-balance-viewer (plugin DeepSeek Harness)
 
 > Référence opérative du projet. Lisible seul. Mis à jour dans la même
 > session dès qu'une action change la vérité du projet.
 >
 > Repo : https://github.com/kinowill/deepseek-balance-viewer-HARNESS-PLUG-IN
-> Clone local : `C:\PROJETS\deepseek-balance-viewer-HARNESS-PLUG-IN`
+> Clone local : `C:\PROJETS\DeepSeek TopUp Solde Viewer\PLUGIN DEEPSEEK HARNESS`
 
 ## REPRISE (10 lignes max)
 
-- **État courant** : v0.1.0 écrite et validée en partie — moitié hôte
-  testée dans un vrai contexte Cordis (appel HTTP réel vers l'API DeepSeek),
-  chaîne client validée par le boot d'une instance du profil web (bundle
-  servi par `/plugins`). Intégrée au profil `desktop` (copie + bundles).
-  Reste la validation visuelle après redémarrage de l'application.
-- **Dernière validation réelle** : 2026-09-23 — boot réel du profil web avec
-  le plugin (voir `VALIDATION_LOG.md`).
-- **Prochaine action** : redémarrer DeepSeek Harness (desktop), vérifier le
-  badge en bas de la barre latérale, saisir la clé API dans le panneau ;
-  puis commits/push GitHub et publication npm.
+- **État courant** : v0.1.0 `dsh-balance-viewer` installée dans le profil
+  `desktop`; le blocage d'activation client est corrigé par l'usage direct du
+  transport RPC natif de Harness.
+- **Dernière validation réelle** : 2026-09-23 — deux démarrages à froid de
+  DeepSeek Harness réussis (processus répondants, fenêtre principale normale,
+  aucun nouveau rapport `web-boot`) et contrat RPC client testé ; correctif
+  poussé sur `main` (`2bea791`).
+- **Prochaine action** : confirmer visuellement le badge en bas de la barre
+  latérale et le solde avec une vraie clé ; publier sur npm après
+  authentification locale.
 - **Points durs / blocages** : le profil `desktop` (Electron) refuse la CLI
   `dsh plugin` → intégration par copie physique dans
   `~/.dsh/profiles/node_modules` + ajout au champ `dsh.profile.bundles` ;
-  après une mise à jour de DSH, relancer `scripts/install.ps1`.
+  après une mise à jour de DSH, relancer `scripts/install.ps1`. npm n'est pas
+  authentifié sur cette machine (`npm whoami` → `ENEEDAUTH`).
 
 ## 1. But du projet
 
@@ -42,7 +43,7 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
   - `lib/client.js` — moitié client : bundle servi par `/plugins`,
     enregistrement dans le slot `sidebar.footer.action`.
   - `cordis.patch.yml` — patch de bundle : une entrée `insert` (id
-    `deepseek-balance`, module `dsh-deepseek-balance`).
+    `deepseek-balance`, module `dsh-balance-viewer`).
   - `scripts/install.ps1` / `uninstall.ps1` — intégration au profil
     `desktop` de DSH.
 
@@ -51,7 +52,7 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 1. Ce document.
 2. `ROADMAP.md` — fait / en cours / à faire / bloqué.
 3. `VALIDATION_LOG.md` — validations réelles.
-4. Code effectivement déployé (`~/.dsh/profiles/node_modules/dsh-deepseek-balance`
+4. Code effectivement déployé (`~/.dsh/profiles/node_modules/dsh-balance-viewer`
    et profil `desktop`) — gagne en cas de conflit.
 
 ## 4. Environnement (faits uniquement, jamais de secrets)
@@ -72,15 +73,17 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 | Date | Contexte | Options | Choix | Pourquoi |
 |---|---|---|---|---|
 | 2026-09-23 | Hébergement du code | sous-dossier du repo viewer ; repo dédié | repo dédié `deepseek-balance-viewer-HARNESS-PLUG-IN` | séparation Python/Node, releases et issues indépendantes |
-| 2026-09-23 | Distribution | GitHub seul ; GitHub + npm | GitHub + npm (paquet `dsh-deepseek-balance`) | installation `dsh plugin add` standard |
+| 2026-09-23 | Emplacement local | clone à la racine de `C:\PROJETS` ; dossier du projet viewer | `C:\PROJETS\DeepSeek TopUp Solde Viewer\PLUGIN DEEPSEEK HARNESS` | protocole, code et historique Git réunis dans le dossier de travail demandé |
+| 2026-09-23 | Distribution | GitHub seul ; GitHub + npm | GitHub + npm (paquet `dsh-balance-viewer`) | installation `dsh plugin add` standard |
 | 2026-09-23 | Stockage de la clé API | champ de config ; magasin credentials DSH | credentials DSH, référence `DEEPSEEK_BALANCE_API_KEY` | jamais de secret dans les fichiers de config ni le repo |
 | 2026-09-23 | Intégration profil desktop | pnpm dans le profil ; copie physique | copie physique + `dsh.profile.bundles` | la CLI `dsh` refuse le profil `desktop` (réservé Electron) |
+| 2026-09-23 | Appels client du service `balance` | monter une contribution Remote tierce ; appeler le transport RPC natif | transport `connection.rpc.call("/api", "balance/*")` | le montage Remote pendant l'activation créait un interblocage et laissait le plug-in en `loading` |
 
 ## 6. État courant
 
-1. **Stable** : code v0.1.0 écrit, testé côté hôte (Cordis + HTTP réel) et
-   côté chaîne client (boot web + `/plugins`), intégré au profil `desktop`.
-2. **En cours** : commits git initiaux et push GitHub ; publication npm.
-3. **À vérifier** : affichage réel du badge dans l'application desktop après
-   redémarrage ; comportement d'un `pnpm install` lancé par l'application
+1. **Stable** : code v0.1.0 testé côté hôte et contrat client ; scripts de
+   migration validés, profil `desktop` aligné et deux boots desktop réussis.
+2. **En cours** : validation visuelle du badge et publication npm.
+3. **À vérifier** : rendu et solde avec une vraie clé ; publication npm après
+   `npm login` ; comportement d'un `pnpm install` lancé par l'application
    (prune éventuelle de la copie — réinstallation via script).

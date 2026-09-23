@@ -1,16 +1,17 @@
-# Roadmap — dsh-deepseek-balance (plugin DeepSeek Harness)
+# Roadmap — dsh-balance-viewer (plugin DeepSeek Harness)
 
 > Une ligne par chantier. Mise à jour à chaque session qui change quelque chose.
 
 ## En cours
 
-- [ ] Validation visuelle sur le profil `desktop` (redémarrage de
-  l'application, badge visible, saisie de la clé, solde affiché).
+- [ ] Validation visuelle du badge et du solde avec une vraie clé dans le
+  profil `desktop` (le démarrage de l'application est validé).
+- [ ] Publication npm après authentification locale (`npm login`).
 
 ## À faire (2-3 prochaines tâches)
 
-- [ ] Publication npm (`dsh-deepseek-balance`) + vérification de l'installation
-  distante (`dsh plugin --profile web add dsh-deepseek-balance`).
+- [ ] Vérification de l'installation distante après publication
+  (`dsh plugin --profile web add dsh-balance-viewer`).
 - [ ] Intervalle de rafraîchissement configurable depuis l'interface (au lieu
   du seul `intervalMs` du patch).
 - [ ] Documentation d'installation générique (profil web/headless) dans le README.
@@ -24,5 +25,13 @@
   (voir `VALIDATION_LOG.md` du 2026-09-23).
 - [x] Intégration au profil `desktop` (copie dans `node_modules` +
   `dsh.profile.bundles`, script `install.ps1`).
+- [x] Renommage en `dsh-balance-viewer`, migration des deux anciennes copies
+  locales et validation de l'idempotence des scripts d'installation.
+- [x] Correction du boot client : suppression du montage Remote circulaire,
+  contrat RPC testé et deux démarrages desktop à froid sans rapport de crash.
+- [x] Correctif exécutable et renommage poussés sur `origin/main`
+  (`2bea791`).
 
 ## Bloqué
+
+- Publication npm : session npm non authentifiée (`npm whoami` → `ENEEDAUTH`).

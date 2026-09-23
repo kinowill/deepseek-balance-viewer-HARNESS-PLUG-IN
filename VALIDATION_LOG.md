@@ -1,4 +1,4 @@
-# Journal de validation — dsh-deepseek-balance (plugin DeepSeek Harness)
+# Journal de validation — dsh-balance-viewer (plugin DeepSeek Harness)
 
 > Une entrée par validation réelle. Chaque entrée consigne l'environnement
 > exact et l'état testé, pour qu'un repreneur puisse vérifier sans la session.
@@ -31,7 +31,7 @@
   contexte `@deepseek-ai/cordis` réel, credentials simulés en mémoire,
   réseau réel vers `api.deepseek.com` ; protocole MAITRE noyau v1.0.0.
 - **État testé** : `lib/index.js` copié dans
-  `~/.dsh/profiles/node_modules/dsh-deepseek-balance` (révision après la
+  `~/.dsh/profiles/node_modules/dsh-balance-viewer` (révision après la
   correction des champs privés `#doRefresh` → `_doRefresh`).
 - **Attendu** : montage du service `balance`, marqueurs Remote lisibles par
   la Gateway, machine à états du solde, clé stockée via le service
@@ -60,8 +60,8 @@
   découverte du manifest `dsh.client`, bundle servi sur `/plugins`.
 - **Observé** : premier boot échoué avec « pending (waiting for service:
   logger) » (diagnostic exact), corrigé ; second boot sans erreur. L'index
-  servi contient `dsh-deepseek-balance` dans le graphe de boot ;
-  `/plugins/??dsh-deepseek-balance/client.js` répond 20 160 octets contenant
+  servi contient `dsh-balance-viewer` dans le graphe de boot ;
+  `/plugins/??dsh-balance-viewer/client.js` répond 20 160 octets contenant
   l'enregistrement `sidebar.footer.action`, le CSS du badge et l'usage de
   `remote.balance`.
 - **Statut** : réussi.
@@ -73,4 +73,61 @@
 - **Prochaine action** : redémarrage de l'application desktop (profil
   `desktop`, plugin déjà installé) et validation visuelle du badge ; saisie
   de la clé API dans le panneau.
+
+## 2026-09-23 — Renommage, migration et installation desktop
+
+- **Environnement** : Windows 11, Windows PowerShell 5.1, node v22.22.2,
+  profil `desktop` réel et fixture isolée reproduisant les deux anciens
+  emplacements du paquet.
+- **État testé** : renommage npm vers `dsh-balance-viewer`, scripts
+  `install.ps1` / `uninstall.ps1`, anciennes copies dans les `node_modules`
+  hoisté et propre au profil desktop.
+- **Attendu** : retirer les deux copies `dsh-deepseek-balance`, installer le
+  nouveau paquet, remplacer l'entrée du manifeste, rester idempotent et
+  désinstaller les deux noms proprement.
+- **Observé** : la fixture de migration passe. Sur le profil réel, un premier
+  passage a révélé que Windows PowerShell 5.1 scalaire ne fournissait pas
+  `.Count` pour une différence unique de `Compare-Object`; le résultat a été
+  forcé en tableau, puis l'installation réelle et un second passage ont
+  réussi. Le manifeste contient exactement une entrée `dsh-balance-viewer` et
+  les anciennes copies ont disparu.
+- **Contrôles complémentaires** : JavaScript (`node --check`), parseur
+  PowerShell, JSON, UTF-8 strict, absence de marqueurs de mojibake et
+  `npm pack --dry-run --json` réussis. Le nom npm est disponible ; publication
+  impossible sans authentification locale (`npm whoami` → `ENEEDAUTH`).
+- **Statut** : réussi pour le repo et l'installation locale ; rendu desktop
+  non vérifié tant que l'application n'a pas été redémarrée.
+- **Prochaine action** : redémarrer DeepSeek Harness et vérifier le badge,
+  puis s'authentifier sur npm pour publier la v0.1.0.
+
+## 2026-09-23 — Diagnostic et correction du boot desktop
+
+- **Environnement** : DeepSeek Harness 0.1.7-alpha.2, profil `desktop` réel,
+  Windows 11, runtime Electron de l'application.
+- **État testé** : activation de la moitié client après installation de
+  `dsh-balance-viewer` dans le profil réel.
+- **Attendu** : fin d'activation du plug-in, fenêtre principale disponible et
+  aucun nouveau rapport de crash `web-boot`.
+- **Observé avant correction** : premier rapport « pending (waiting for
+  service: remote.balance) ». Après ajout d'une contribution Remote côté
+  client, le plug-in restait en `loading`; une instrumentation temporaire a
+  localisé l'attente dans `await ctx.remote.$mount(...)`.
+- **Cause racine** : interblocage d'activation — le plug-in attendait le
+  montage d'un service Remote pendant que le boot attendait la fin de son
+  activation.
+- **Correction** : appels `balance/*` via le transport natif déjà actif,
+  `connection.rpc.call("/api", ...)`, sans créer de service client pendant le
+  boot. L'instrumentation temporaire a été retirée.
+- **Contrôles** : test contractuel des routes et arguments RPC réussi ;
+  `node --check` sur les deux modules ; deux démarrages à froid successifs,
+  chacun avec cinq processus répondants et une fenêtre principale normale ;
+  aucun nouveau fichier dans le dossier des rapports après 20 secondes sur
+  chacun des deux lancements.
+- **Statut** : réussi pour l'activation et la stabilité de démarrage desktop.
+- **Git** : correctif exécutable et renommage commités puis poussés sur
+  `origin/main` (`2bea791`).
+- **Limites** : l'affichage du badge et le solde avec une vraie clé restent à
+  confirmer visuellement ; aucune clé ni valeur sensible n'a été lue.
+- **Prochaine action** : confirmer le rendu dans la barre latérale, puis
+  publier la v0.1.0 sur npm après `npm login`.
 
