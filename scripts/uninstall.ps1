@@ -27,17 +27,29 @@ foreach ($target in $targets) {
 
 if (Test-Path $profilePkg) {
   $manifest = Get-Content $profilePkg -Raw | ConvertFrom-Json
+  $manifestChanged = $false
   if ($null -ne $manifest.dsh -and $null -ne $manifest.dsh.profile -and $null -ne $manifest.dsh.profile.bundles) {
     $bundles = @($manifest.dsh.profile.bundles)
     $next = @($bundles | Where-Object { $_ -notin @("dsh-balance-viewer", "dsh-deepseek-balance") })
     if ($next.Count -ne $bundles.Count) {
-      $backup = "$profilePkg.dshbak"
-      Copy-Item $profilePkg $backup -Force
       $manifest.dsh.profile.bundles = $next
-      $json = $manifest | ConvertTo-Json -Depth 10
-      [System.IO.File]::WriteAllText($profilePkg, $json + "`r`n", (New-Object System.Text.UTF8Encoding($false)))
-      Write-Host "Bundle removed from the profile manifest (backup: $backup)"
+      $manifestChanged = $true
     }
+  }
+  if ($null -ne $manifest.dependencies) {
+    foreach ($name in @("dsh-balance-viewer", "dsh-deepseek-balance")) {
+      if ($null -ne $manifest.dependencies.PSObject.Properties[$name]) {
+        $manifest.dependencies.PSObject.Properties.Remove($name)
+        $manifestChanged = $true
+      }
+    }
+  }
+  if ($manifestChanged) {
+    $backup = "$profilePkg.dshbak"
+    Copy-Item $profilePkg $backup -Force
+    $json = $manifest | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($profilePkg, $json + "`r`n", (New-Object System.Text.UTF8Encoding($false)))
+    Write-Host "Dependency and bundle removed from the profile manifest (backup: $backup)"
   }
 }
 

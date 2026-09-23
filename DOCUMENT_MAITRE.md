@@ -9,18 +9,18 @@
 ## REPRISE (10 lignes max)
 
 - **État courant** : v0.1.0 `dsh-balance-viewer` installée dans le profil
-  `desktop`; le blocage d'activation client est corrigé par l'usage direct du
-  transport RPC natif de Harness.
-- **Dernière validation réelle** : 2026-09-23 — deux démarrages à froid de
-  DeepSeek Harness réussis (processus répondants, fenêtre principale normale,
-  aucun nouveau rapport `web-boot`) et contrat RPC client testé ; correctif
-  poussé sur `main` (`2bea791`).
-- **Prochaine action** : confirmer visuellement le badge en bas de la barre
-  latérale et le solde avec une vraie clé ; publier sur npm après
-  authentification locale.
+  `desktop`, déclarée comme dépendance locale et activée comme bundle ; le
+  blocage d'activation et le rendu vide du badge sont corrigés.
+- **Dernière validation réelle** : 2026-09-23 — migration d'installation
+  testée sur fixture, test de rendu du bouton et du panneau réussi, fichiers
+  déployés identiques au repo, nouveau boot sans rapport `web-boot`, badge et
+  panneau confirmés visuellement dans l'application.
+- **Prochaine action** : saisir une vraie clé API et confirmer le solde ;
+  publier sur npm après authentification locale.
 - **Points durs / blocages** : le profil `desktop` (Electron) refuse la CLI
   `dsh plugin` → intégration par copie physique dans
-  `~/.dsh/profiles/node_modules` + ajout au champ `dsh.profile.bundles` ;
+  `~/.dsh/profiles/node_modules` + dépendance locale + ajout au champ
+  `dsh.profile.bundles` ;
   après une mise à jour de DSH, relancer `scripts/install.ps1`. npm n'est pas
   authentifié sur cette machine (`npm whoami` → `ENEEDAUTH`).
 
@@ -62,8 +62,8 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 - Commandes utiles :
   - Installer : `powershell .\scripts\install.ps1`
   - Désinstaller : `powershell .\scripts\uninstall.ps1`
-  - Vérifier la présence : Settings → Plugins (inventaire) + badge en bas de
-    la barre latérale.
+  - Vérifier la présence : Plugins → Installed ; état d'exécution dans
+    Settings → Built-in plugins ; badge en bas de la barre latérale.
 - Accès nécessaires : API DeepSeek (clé stockée dans `~/.dsh/.credentials.yaml`).
 - Hors documentation (clés, comptes) : clé API DeepSeek, comptes GitHub/npm —
   jamais dans le repo.
@@ -76,14 +76,16 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 | 2026-09-23 | Emplacement local | clone à la racine de `C:\PROJETS` ; dossier du projet viewer | `C:\PROJETS\DeepSeek TopUp Solde Viewer\PLUGIN DEEPSEEK HARNESS` | protocole, code et historique Git réunis dans le dossier de travail demandé |
 | 2026-09-23 | Distribution | GitHub seul ; GitHub + npm | GitHub + npm (paquet `dsh-balance-viewer`) | installation `dsh plugin add` standard |
 | 2026-09-23 | Stockage de la clé API | champ de config ; magasin credentials DSH | credentials DSH, référence `DEEPSEEK_BALANCE_API_KEY` | jamais de secret dans les fichiers de config ni le repo |
-| 2026-09-23 | Intégration profil desktop | pnpm dans le profil ; copie physique | copie physique + `dsh.profile.bundles` | la CLI `dsh` refuse le profil `desktop` (réservé Electron) |
+| 2026-09-23 | Intégration profil desktop | pnpm dans le profil ; copie physique | copie physique + dépendance locale `file:` + `dsh.profile.bundles` | la CLI `dsh` refuse le profil `desktop`; la dépendance est nécessaire pour que le gestionnaire classe le paquet dans Installed |
 | 2026-09-23 | Appels client du service `balance` | monter une contribution Remote tierce ; appeler le transport RPC natif | transport `connection.rpc.call("/api", "balance/*")` | le montage Remote pendant l'activation créait un interblocage et laissait le plug-in en `loading` |
+| 2026-09-23 | Création des éléments React | `jsxRuntime.jsx` ; `React.createElement` | `React.createElement` | le code fournit les enfants en arguments positionnels ; avec `jsx()`, ils devenaient des clés et le badge était un conteneur vide |
 
 ## 6. État courant
 
 1. **Stable** : code v0.1.0 testé côté hôte et contrat client ; scripts de
-   migration validés, profil `desktop` aligné et deux boots desktop réussis.
-2. **En cours** : validation visuelle du badge et publication npm.
-3. **À vérifier** : rendu et solde avec une vraie clé ; publication npm après
+   migration validés, profil `desktop` aligné (dépendance + bundle) et boots
+   desktop réussis sans nouveau rapport de crash.
+2. **En cours** : validation du solde réel et publication npm.
+3. **À vérifier** : solde avec une vraie clé ; publication npm après
    `npm login` ; comportement d'un `pnpm install` lancé par l'application
    (prune éventuelle de la copie — réinstallation via script).

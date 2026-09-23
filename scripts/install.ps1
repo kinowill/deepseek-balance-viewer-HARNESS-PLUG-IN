@@ -1,9 +1,10 @@
 # Install dsh-balance-viewer into the DeepSeek Harness desktop profile.
 #
 # The desktop profile is reserved for the Electron app: the `dsh plugin` CLI
-# refuses to manage it, so this script does the two steps by hand:
+# refuses to manage it, so this script does the three steps by hand:
 #   1. copy the package into the profile's hoisted node_modules
-#   2. append "dsh-balance-viewer" to dsh.profile.bundles in the profile manifest
+#   2. declare the local package in the profile dependencies
+#   3. append "dsh-balance-viewer" to dsh.profile.bundles
 #
 # Usage (from anywhere):  powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 # Then restart DeepSeek Harness.
@@ -15,6 +16,7 @@ $ErrorActionPreference = "Stop"
 
 $src = Split-Path -Parent $PSScriptRoot
 $target = Join-Path $DshHome "profiles\node_modules\dsh-balance-viewer"
+$dependencySpec = "file:" + ($src -replace "\\", "/")
 $legacyTargets = @(
   (Join-Path $DshHome "profiles\node_modules\dsh-deepseek-balance"),
   (Join-Path $DshHome "profiles\desktop\node_modules\dsh-deepseek-balance")
@@ -39,7 +41,7 @@ foreach ($legacyTarget in $legacyTargets) {
   }
 }
 
-# 2) Replace the legacy bundle name and add the current bundle (backup first).
+# 2) Declare the local dependency and activate its bundle (backup first).
 $manifest = Get-Content $profilePkg -Raw | ConvertFrom-Json
 if ($null -eq $manifest.dsh -or $null -eq $manifest.dsh.profile -or $null -eq $manifest.dsh.profile.bundles) {
   throw "Unexpected profile manifest shape in $profilePkg (dsh.profile.bundles missing)"
@@ -50,17 +52,34 @@ if ("dsh-balance-viewer" -notin $next) {
   $next += "dsh-balance-viewer"
 }
 $changes = @(Compare-Object $bundles $next -SyncWindow 0)
-if ($changes.Count -gt 0) {
+$manifestChanged = $changes.Count -gt 0
+$manifest.dsh.profile.bundles = $next
+
+if ($null -eq $manifest.dependencies) {
+  $manifest | Add-Member -NotePropertyName "dependencies" -NotePropertyValue ([pscustomobject]@{}) -Force
+  $manifestChanged = $true
+}
+$legacyDependency = $manifest.dependencies.PSObject.Properties["dsh-deepseek-balance"]
+if ($null -ne $legacyDependency) {
+  $manifest.dependencies.PSObject.Properties.Remove("dsh-deepseek-balance")
+  $manifestChanged = $true
+}
+$currentDependency = $manifest.dependencies.PSObject.Properties["dsh-balance-viewer"]
+if ($null -eq $currentDependency -or $currentDependency.Value -ne $dependencySpec) {
+  $manifest.dependencies | Add-Member -NotePropertyName "dsh-balance-viewer" -NotePropertyValue $dependencySpec -Force
+  $manifestChanged = $true
+}
+
+if ($manifestChanged) {
   $backup = "$profilePkg.dshbak"
   Copy-Item $profilePkg $backup -Force
-  $manifest.dsh.profile.bundles = $next
   $json = $manifest | ConvertTo-Json -Depth 10
   [System.IO.File]::WriteAllText($profilePkg, $json + "`r`n", (New-Object System.Text.UTF8Encoding($false)))
-  Write-Host "bundles updated (backup: $backup)"
+  Write-Host "profile dependency and bundle updated (backup: $backup)"
 } else {
-  Write-Host "bundle already declared in the profile manifest"
+  Write-Host "profile dependency and bundle already declared"
 }
 
 Write-Host ""
 Write-Host "Installed: $target"
-Write-Host "Next: restart DeepSeek Harness, then check Settings > Plugins and the sidebar footer badge."
+Write-Host "Next: restart DeepSeek Harness, then check Plugins > Installed and the sidebar footer badge."

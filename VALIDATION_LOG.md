@@ -131,3 +131,46 @@
 - **Prochaine action** : confirmer le rendu dans la barre latérale, puis
   publier la v0.1.0 sur npm après `npm login`.
 
+## 2026-09-23 — Référencement dans le gestionnaire de plug-ins desktop
+
+- **Observation** : le plug-in démarrait sans crash mais n'apparaissait pas
+  dans la page Plugins. Le profil le sélectionnait dans
+  `dsh.profile.bundles` et sa copie physique existait, tandis que
+  `dependencies` restait vide.
+- **Cause racine** : le gestionnaire de Harness 0.1.7-alpha.2 considère un
+  bundle comme installé uniquement si son nom figure dans les dépendances du
+  profil ; un bundle seulement sélectionné est filtré de la liste.
+- **Correction** : `install.ps1` ajoute une dépendance locale `file:` vers le
+  dépôt et active le bundle ; `uninstall.ps1` retire les deux déclarations.
+- **Fixture** : migration de l'ancien nom réussie, dépendance locale créée,
+  second passage idempotent et désinstallation complète réussie sous Windows
+  PowerShell 5.1.
+- **Profil réel** : une dépendance `dsh-balance-viewer` et une seule entrée de
+  bundle sont présentes ; aucun ancien nom ne subsiste. Les quatre fichiers
+  exécutables déployés ont les mêmes empreintes SHA-256 que le repo.
+- **Boot réel** : cinq processus répondants après 20 secondes, fenêtre
+  principale disponible et aucun nouveau rapport `web-boot`.
+- **Limite** : confirmation visuelle de la carte Installed et du badge à faire
+  dans l'interface ouverte.
+
+## 2026-09-23 — Correction du badge invisible
+
+- **Reproduction** : le plug-in était actif sans crash, mais la barre latérale
+  ne montrait aucun badge. Un test minimal du composant a confirmé que sa
+  racine ne contenait aucun enfant.
+- **Cause racine** : `jsxRuntime.jsx` était appelé avec la signature de
+  `React.createElement`. Les enfants positionnels étaient interprétés comme
+  des clés JSX et ignorés, produisant un `div` vide. Quatre noms d'icônes
+  suffixés `16` n'existaient par ailleurs pas dans les primitives de Harness.
+- **Correction** : utilisation de `React.createElement` et remplacement par
+  les icônes `*OutlineRegular` réellement exportées.
+- **Contrôles** : le test isolé rend maintenant le bouton fermé, le panneau
+  ouvert et toutes ses icônes ; l'appel RPC initial est conservé. Le paquet a
+  été réinstallé puis Harness a redémarré avec cinq processus répondants et
+  aucun nouveau rapport de crash après 20 secondes.
+- **Validation visuelle** : badge orange « No API key » visible au-dessus du
+  compte dans le pied de la barre latérale ; panneau « DeepSeek balance »
+  ouvert avec état, rafraîchissement, champ de clé masqué et action Save.
+- **Statut** : réussi pour le rendu sans clé. Le solde réel reste à tester
+  avec une clé API fournie par l'utilisateur.
+

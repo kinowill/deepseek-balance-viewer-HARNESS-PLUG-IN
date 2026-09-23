@@ -39,6 +39,10 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 # puis redémarrez DeepSeek Harness
 ```
 
+Le script copie le paquet, le déclare comme dépendance locale du profil et
+active son bundle. Il apparaît ensuite dans **Plugins → Installed** ; son état
+d'exécution détaillé est aussi visible dans **Settings → Built-in plugins**.
+
 Désinstallation : `powershell -ExecutionPolicy Bypass -File .\scripts\uninstall.ps1`
 
 > ⚠️ Après une mise à jour de DeepSeek Harness, l'application peut réinstaller

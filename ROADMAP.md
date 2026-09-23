@@ -4,8 +4,7 @@
 
 ## En cours
 
-- [ ] Validation visuelle du badge et du solde avec une vraie clé dans le
-  profil `desktop` (le démarrage de l'application est validé).
+- [ ] Validation du solde avec une vraie clé dans le profil `desktop`.
 - [ ] Publication npm après authentification locale (`npm login`).
 
 ## À faire (2-3 prochaines tâches)
@@ -31,6 +30,12 @@
   contrat RPC testé et deux démarrages desktop à froid sans rapport de crash.
 - [x] Correctif exécutable et renommage poussés sur `origin/main`
   (`2bea791`).
+- [x] Déclaration du paquet comme dépendance locale du profil desktop afin
+  qu'il apparaisse dans le groupe Installed du gestionnaire de plug-ins.
+- [x] Correction du rendu vide : `React.createElement` et noms d'icônes
+  réellement exportés par Harness, avec test du badge et du panneau.
+- [x] Validation visuelle dans Harness : badge « No API key » visible dans le
+  pied de la barre latérale et panneau fonctionnel à l'ouverture.
 
 ## Bloqué
 
