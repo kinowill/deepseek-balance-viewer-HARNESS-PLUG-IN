@@ -1,0 +1,8 @@
+# dsh-deepseek-balance bundle patch: ONE insert over the tree root, composed
+# when the package is listed in dsh.profile.bundles. Later bundle patches and
+# the user's cordis.patch.yml can address this row by id (last write wins).
+- insert:
+    - id: deepseek-balance
+      name: dsh-deepseek-balance
+      config:
+        intervalMs: 60000
