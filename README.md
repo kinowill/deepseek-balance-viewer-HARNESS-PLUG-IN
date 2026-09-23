@@ -1,4 +1,4 @@
-# dsh-deepseek-balance
+# dsh-balance-viewer
 
 Plugin **DeepSeek Harness** : votre solde DeepSeek en direct, directement dans
 l'interface.
@@ -21,7 +21,7 @@ widget Python [deepseek-balance-viewer](https://github.com/kinowill/deepseek-bal
 
 ```sh
 # depuis npm (recommandé)
-dsh plugin --profile web add dsh-deepseek-balance
+dsh plugin --profile web add dsh-balance-viewer
 
 # depuis GitHub
 dsh plugin --profile web add github:kinowill/deepseek-balance-viewer-HARNESS-PLUG-IN

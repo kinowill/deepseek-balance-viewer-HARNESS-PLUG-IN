@@ -1,4 +1,4 @@
-# Fiche projet — dsh-deepseek-balance (plugin DeepSeek Harness)
+# Fiche projet — dsh-balance-viewer (plugin DeepSeek Harness)
 
 > Chargée avec le noyau. Uniquement les spécificités locales ; aucune règle
 > générale du protocole ici (elles vivent dans NOYAU.md / PROTOCOLE.md).

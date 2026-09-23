@@ -1,5 +1,5 @@
 {
-  "name": "dsh-deepseek-balance",
+  "name": "dsh-balance-viewer",
   "version": "0.1.0",
   "description": "DeepSeek Harness plugin: live DeepSeek platform balance badge in the sidebar (API key stored in the DSH credentials store)",
   "type": "module",
