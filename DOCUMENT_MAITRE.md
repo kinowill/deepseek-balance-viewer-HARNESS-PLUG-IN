@@ -15,7 +15,7 @@
   exposition, réponse API HTTP 200 (`is_available: false`, une entrée de
   solde), interprétation déployée = `unavailable` avec balance et horodatage ;
   3 tests passent, paquet valide, 5 processus Harness répondants et aucun
-  nouveau rapport `web-boot`.
+  nouveau rapport `web-boot` ; correctif poussé sur `main` (`f3acbac`).
 - **Prochaine action** : confirmer visuellement les montants dans le panneau,
   recharger le crédit API côté DeepSeek si l'utilisateur veut rendre le compte
   utilisable, puis publier sur npm après authentification locale.

@@ -25,6 +25,9 @@
   rapport `web-boot`.
 - **Statut** : correction fonctionnelle validée ; confirmation visuelle du
   panneau encore à obtenir de l'utilisateur.
+- **Git / déploiement** : code et documentation poussés sur `origin/main`
+  (`f3acbac`) ; profil desktop aligné sur ce code ; aucun déploiement distant
+  restant, hors publication npm toujours bloquée par l'authentification.
 
 ## 2026-09-23 — Vérification en lecture seule du mécanisme de plugins DSH
 
