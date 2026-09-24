@@ -22,9 +22,13 @@
   Les fichiers déployés correspondent au repo ; avec la vraie réponse filtrée,
   le module déployé produit `state=unavailable`, `hasBalance=true` et un
   horodatage. Harness redémarre avec cinq processus répondants et aucun nouveau
-  rapport `web-boot`.
-- **Statut** : correction fonctionnelle validée ; confirmation visuelle du
-  panneau encore à obtenir de l'utilisateur.
+  rapport `web-boot`. Un test Cordis avec appel simulé confirme un premier
+  fetch immédiat, l'enregistrement du timer à 60 000 ms et un second fetch au
+  déclenchement du cycle (`1` → `2`). Le patch desktop configure explicitement
+  `intervalMs: 60000`; le client relit le snapshot toutes les 30 secondes.
+- **Validation visuelle** : l'utilisateur confirme le nouveau rendu dans le
+  panneau desktop le 2026-09-24.
+- **Statut** : réussi.
 - **Git / déploiement** : code et documentation poussés sur `origin/main`
   (`f3acbac`) ; profil desktop aligné sur ce code ; aucun déploiement distant
   restant, hors publication npm toujours bloquée par l'authentification.

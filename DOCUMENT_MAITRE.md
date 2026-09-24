@@ -15,10 +15,12 @@
   exposition, réponse API HTTP 200 (`is_available: false`, une entrée de
   solde), interprétation déployée = `unavailable` avec balance et horodatage ;
   3 tests passent, paquet valide, 5 processus Harness répondants et aucun
-  nouveau rapport `web-boot` ; correctif poussé sur `main` (`f3acbac`).
-- **Prochaine action** : confirmer visuellement les montants dans le panneau,
-  recharger le crédit API côté DeepSeek si l'utilisateur veut rendre le compte
-  utilisable, puis publier sur npm après authentification locale.
+  nouveau rapport `web-boot` ; affichage confirmé par l'utilisateur ;
+  minuterie réelle vérifiée à 60 000 ms avec un nouvel appel au cycle suivant ;
+  correctif poussé sur `main` (`f3acbac`).
+- **Prochaine action** : recharger le crédit API côté DeepSeek si l'utilisateur
+  veut rendre le compte utilisable, puis publier sur npm après authentification
+  locale.
 - **Points durs / blocages** : le profil `desktop` (Electron) refuse la CLI
   `dsh plugin` → intégration par copie physique dans
   `~/.dsh/profiles/node_modules` + dépendance locale + ajout au champ
@@ -88,7 +90,7 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 1. **Stable** : code v0.1.0 testé côté hôte et contrat client ; scripts de
    migration validés, profil `desktop` aligné (dépendance + bundle) et boots
    desktop réussis sans nouveau rapport de crash.
-2. **En cours** : confirmation visuelle du nouveau rendu et publication npm.
-3. **À vérifier** : rendu du solde indisponible dans le panneau ; publication
-   npm après `npm login` ; comportement d'un `pnpm install` lancé par
-   l'application (prune éventuelle de la copie — réinstallation via script).
+2. **En cours** : publication npm.
+3. **À vérifier** : publication npm après `npm login` ; comportement d'un
+   `pnpm install` lancé par l'application (prune éventuelle de la copie —
+   réinstallation via script).

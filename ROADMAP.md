@@ -4,8 +4,6 @@
 
 ## En cours
 
-- [ ] Confirmation visuelle du solde avec `is_available: false` dans le panneau
-  desktop (montants visibles, avertissement et LED orange).
 - [ ] Publication npm après authentification locale (`npm login`).
 
 ## À faire (2-3 prochaines tâches)
@@ -40,6 +38,8 @@
 - [x] Conservation et affichage des montants lorsque DeepSeek répond
   `is_available: false`, avec avertissement explicite ; tests automatisés,
   réponse API réelle filtrée et redémarrage desktop validés.
+- [x] Confirmation visuelle par l'utilisateur du nouveau rendu dans le panneau
+  desktop.
 
 ## Bloqué
 
