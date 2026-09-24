@@ -4,6 +4,9 @@
   "description": "DeepSeek Harness plugin: live DeepSeek platform balance badge in the sidebar (API key stored in the DSH credentials store)",
   "type": "module",
   "main": "lib/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
   "exports": {
     ".": "./lib/index.js",
     "./client": "./lib/client.js",

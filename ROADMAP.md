@@ -4,7 +4,8 @@
 
 ## En cours
 
-- [ ] Validation du solde avec une vraie clé dans le profil `desktop`.
+- [ ] Confirmation visuelle du solde avec `is_available: false` dans le panneau
+  desktop (montants visibles, avertissement et LED orange).
 - [ ] Publication npm après authentification locale (`npm login`).
 
 ## À faire (2-3 prochaines tâches)
@@ -36,6 +37,9 @@
   réellement exportés par Harness, avec test du badge et du panneau.
 - [x] Validation visuelle dans Harness : badge « No API key » visible dans le
   pied de la barre latérale et panneau fonctionnel à l'ouverture.
+- [x] Conservation et affichage des montants lorsque DeepSeek répond
+  `is_available: false`, avec avertissement explicite ; tests automatisés,
+  réponse API réelle filtrée et redémarrage desktop validés.
 
 ## Bloqué
 

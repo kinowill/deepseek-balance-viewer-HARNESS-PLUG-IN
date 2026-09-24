@@ -9,15 +9,16 @@
 ## REPRISE (10 lignes max)
 
 - **État courant** : v0.1.0 `dsh-balance-viewer` installée dans le profil
-  `desktop`, déclarée comme dépendance locale et activée comme bundle ; le
-  blocage d'activation et le rendu vide du badge sont corrigés.
-- **Dernière validation réelle** : 2026-09-23 — migration d'installation
-  testée sur fixture, test de rendu du bouton et du panneau réussi, fichiers
-  déployés identiques au repo, nouveau boot sans rapport `web-boot`, badge et
-  panneau confirmés visuellement dans l'application ; correctif poussé sur
-  `main` (`7f4a97d`).
-- **Prochaine action** : saisir une vraie clé API et confirmer le solde ;
-  publier sur npm après authentification locale.
+  `desktop` ; une réponse DeepSeek valide avec `is_available: false` conserve
+  maintenant les montants et affiche un avertissement, au lieu de les masquer.
+- **Dernière validation réelle** : 2026-09-24 — vraie clé résolue sans
+  exposition, réponse API HTTP 200 (`is_available: false`, une entrée de
+  solde), interprétation déployée = `unavailable` avec balance et horodatage ;
+  3 tests passent, paquet valide, 5 processus Harness répondants et aucun
+  nouveau rapport `web-boot`.
+- **Prochaine action** : confirmer visuellement les montants dans le panneau,
+  recharger le crédit API côté DeepSeek si l'utilisateur veut rendre le compte
+  utilisable, puis publier sur npm après authentification locale.
 - **Points durs / blocages** : le profil `desktop` (Electron) refuse la CLI
   `dsh plugin` → intégration par copie physique dans
   `~/.dsh/profiles/node_modules` + dépendance locale + ajout au champ
@@ -80,13 +81,14 @@ détails (offert / rechargé), rafraîchissement et gestion de la clé API —
 | 2026-09-23 | Intégration profil desktop | pnpm dans le profil ; copie physique | copie physique + dépendance locale `file:` + `dsh.profile.bundles` | la CLI `dsh` refuse le profil `desktop`; la dépendance est nécessaire pour que le gestionnaire classe le paquet dans Installed |
 | 2026-09-23 | Appels client du service `balance` | monter une contribution Remote tierce ; appeler le transport RPC natif | transport `connection.rpc.call("/api", "balance/*")` | le montage Remote pendant l'activation créait un interblocage et laissait le plug-in en `loading` |
 | 2026-09-23 | Création des éléments React | `jsxRuntime.jsx` ; `React.createElement` | `React.createElement` | le code fournit les enfants en arguments positionnels ; avec `jsx()`, ils devenaient des clés et le badge était un conteneur vide |
+| 2026-09-24 | API répond `is_available: false` avec des montants | masquer les montants ; les afficher avec avertissement | afficher total/offert/rechargé, LED orange et avertissement | le statut d'utilisabilité et les valeurs de solde sont deux informations distinctes fournies ensemble par l'API |
 
 ## 6. État courant
 
 1. **Stable** : code v0.1.0 testé côté hôte et contrat client ; scripts de
    migration validés, profil `desktop` aligné (dépendance + bundle) et boots
    desktop réussis sans nouveau rapport de crash.
-2. **En cours** : validation du solde réel et publication npm.
-3. **À vérifier** : solde avec une vraie clé ; publication npm après
-   `npm login` ; comportement d'un `pnpm install` lancé par l'application
-   (prune éventuelle de la copie — réinstallation via script).
+2. **En cours** : confirmation visuelle du nouveau rendu et publication npm.
+3. **À vérifier** : rendu du solde indisponible dans le panneau ; publication
+   npm après `npm login` ; comportement d'un `pnpm install` lancé par
+   l'application (prune éventuelle de la copie — réinstallation via script).

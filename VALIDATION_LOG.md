@@ -3,6 +3,29 @@
 > Une entrée par validation réelle. Chaque entrée consigne l'environnement
 > exact et l'état testé, pour qu'un repreneur puisse vérifier sans la session.
 
+## 2026-09-24 — Solde présent mais crédit API indisponible
+
+- **Observation** : après enregistrement d'une vraie clé, le badge affichait
+  seulement « Balance unavailable ».
+- **Diagnostic filtré** : la clé est présente ; l'endpoint officiel répond
+  HTTP 200 en JSON avec `is_available: false`, une entrée `balance_infos` et
+  les quatre champs attendus. Ni clé ni montant n'ont été imprimés.
+- **Cause racine** : le service traitait `is_available: false` comme une
+  absence totale de solde et supprimait les détails pourtant fournis par
+  DeepSeek.
+- **Correction** : le snapshot conserve total, offert, rechargé, devise et
+  horodatage dans cet état. Le client affiche les montants, une LED orange et
+  « Crédit API indisponible » / « API credit unavailable ».
+- **Contrôles** : 3 tests `node:test` (disponible, indisponible avec détails,
+  détails absents), vérifications syntaxiques des trois modules et
+  `npm pack --dry-run` réussis. L'audit npm n'est pas exécutable sans lockfile.
+  Les fichiers déployés correspondent au repo ; avec la vraie réponse filtrée,
+  le module déployé produit `state=unavailable`, `hasBalance=true` et un
+  horodatage. Harness redémarre avec cinq processus répondants et aucun nouveau
+  rapport `web-boot`.
+- **Statut** : correction fonctionnelle validée ; confirmation visuelle du
+  panneau encore à obtenir de l'utilisateur.
+
 ## 2026-09-23 — Vérification en lecture seule du mécanisme de plugins DSH
 
 - **Environnement** : DeepSeek Harness 0.1.7-alpha.2 (profil desktop),
